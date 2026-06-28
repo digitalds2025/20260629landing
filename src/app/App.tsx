@@ -61,7 +61,7 @@ const services: Service[] = [
     name: "디대봇",
     label: "01 · 사내 지식/예약",
     description:
-      "자원 예약부터 그룹웨어 게시글, 사내 규정과 정보에 대한 질문까지 디대봇이 대신 답해드려요.",
+      "지금은 그룹웨어 게시글, 식단표, 회의실 현황, FAQ 정도만 학습해 이 범위 안의 질문에 답합니다. 회사 정보를 더 넓게 학습하면 훨씬 뛰어난 업무 도구가 될 수 있어요.",
     icon: Bot,
     accentGlow:
       "from-blue-500/30 via-sky-400/10 to-transparent",
@@ -260,6 +260,60 @@ type ChatMessage = {
   buttons?: [string, string];
 };
 
+const didaebotCurrentData = [
+  "그룹웨어 게시글",
+  "식단표",
+  "회의실 현황",
+  "FAQ",
+];
+
+type ComingSoonScenario = {
+  dataSource: string;
+  question: string;
+  answer: string;
+};
+
+const didaebotComingSoonScenarios: ComingSoonScenario[] = [
+  {
+    dataSource: "직원별 업무분장표",
+    question: "김승리 강사 담당자가 누구였지?",
+    answer: "컨텐츠본부 XXX 프로입니다.",
+  },
+  {
+    dataSource: "서비스·업무 담당 안내",
+    question: "시사인에 대해 질문하려는데 누구한테 물어봐야 해?",
+    answer: "경영기획팀 XXX 프로에게 문의하시면 됩니다.",
+  },
+  {
+    dataSource: "MIS 프로젝트 이력",
+    question:
+      "작년 3월 이미지 강사 XXX 관련 프로모션 디자인 작업 누가 했지?",
+    answer:
+      "디자인은 XXX 프로, 기획은 XXX 프로, 개발은 XXX 프로가 진행했습니다.",
+  },
+  {
+    dataSource: "MIS 업무 진행·마무리 이력",
+    question:
+      "저번 달 유대종 강사 XXX 프로모션 업무가 어떻게 진행됐고, 어떻게 마무리됐는지 알려줘.",
+    answer:
+      "XXX 프로와 XXX 프로가 협의해 기획 방향을 잡았고, ○○을 목표로 작업 방향이 결정되었습니다. 이후 기획·디자인·개발이 순차적으로 진행되어 △△으로 마무리되었습니다.",
+  },
+  {
+    dataSource: "마이맥 어드민 · 시사인 매뉴얼 · 업무 매뉴얼",
+    question:
+      "강사님들 수강후기를 봐야 하는데 어떤 권한을 오픈 요청하면 되는 거야?",
+    answer:
+      "○○ 어드민 경로에서 확인할 수 있습니다. ○○ 품의서로 결재를 올리시고, 결재라인은 ○○ → ○○ 순으로 설정하시면 됩니다.",
+  },
+  {
+    dataSource: "그룹웨어 결재·지출 안내",
+    question:
+      "이번 달 XXX 업체 지출결의서 상신하려는데 그룹웨어에서 어떻게 결재 올리면 되는 거야?",
+    answer:
+      "그룹웨어 → ○○ 메뉴 → ○○ 양식 선택 → 증빙 첨부 → 결재라인 ○○ → ○○ 설정 후 상신하시면 됩니다. 단계별로 안내해 드릴게요.",
+  },
+];
+
 const didaebotConversation: ChatMessage[] = [
   { variant: "user", message: "오늘 점심 뭐야?" },
   {
@@ -361,48 +415,111 @@ function DidaebotSection({ onOpenGuide }: { onOpenGuide: () => void }) {
   const { description } = didaebotService;
 
   return (
-    <div className="grid items-center gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:gap-14">
-      <div className="flex flex-col">
-        <div className="flex items-center gap-4">
-          <div className="grid h-16 w-16 flex-none place-items-center rounded-full bg-[#3C1E1E] text-white shadow-lg shadow-[#3C1E1E]/30">
-            <Bot className="h-8 w-8" />
+    <div className="space-y-10 md:space-y-12">
+      <div className="grid items-center gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:gap-14">
+        <div className="flex flex-col">
+          <div className="flex items-center gap-4">
+            <div className="grid h-16 w-16 flex-none place-items-center rounded-full bg-[#3C1E1E] text-white shadow-lg shadow-[#3C1E1E]/30">
+              <Bot className="h-8 w-8" />
+            </div>
+            <h3 className="text-4xl font-bold tracking-[-0.03em] text-slate-900 md:text-5xl">
+              디대봇
+            </h3>
           </div>
-          <h3 className="text-4xl font-bold tracking-[-0.03em] text-slate-900 md:text-5xl">
-            디대봇
-          </h3>
+
+          <p className="mt-5 text-lg leading-8 text-slate-800/85 md:text-xl md:leading-9">
+            {description}
+          </p>
+
+          <div className="mt-6">
+            <p className="text-xs font-bold tracking-[0.12em] text-[#3C1E1E]/70">
+              현재 학습 데이터
+            </p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {didaebotCurrentData.map((item) => (
+                <span
+                  key={item}
+                  className="rounded-full border border-[#3C1E1E]/15 bg-white/80 px-3.5 py-1.5 text-xs font-semibold text-[#3C1E1E] shadow-sm md:text-sm"
+                >
+                  {item}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <Button
+            onClick={onOpenGuide}
+            style={{ boxShadow: "0 6px 0 rgba(0,0,0,0.25)" }}
+            className="mt-8 h-14 w-full rounded-2xl bg-[#191919] text-base font-bold text-white transition-all duration-100 hover:bg-[#2d2d2d] active:translate-y-1 active:shadow-none sm:w-fit sm:px-10"
+          >
+            🤖 디대봇 사용하기
+          </Button>
         </div>
 
-        <p className="mt-5 text-lg leading-8 text-slate-800/85 md:text-xl md:leading-9">
-          {description}
-        </p>
+        <div className="relative mx-auto w-full max-w-md lg:max-w-none">
+          <div className="pointer-events-none absolute -inset-4 rounded-[2.75rem] bg-[#3C1E1E]/10 blur-2xl" />
+          <div className="relative overflow-hidden rounded-[2.25rem] border border-black/10 bg-[#ABC1D1] shadow-[0_24px_60px_rgba(0,0,0,0.18)]">
+            <div className="flex items-center gap-3 border-b border-black/5 bg-[#3C1E1E] px-5 py-4">
+              <div className="grid h-10 w-10 place-items-center rounded-full bg-[#FEE500]">
+                <Bot className="h-5 w-5 text-[#3C1E1E]" />
+              </div>
+              <div>
+                <p className="text-sm font-bold text-white">디대봇</p>
+                <p className="text-xs text-white/60">디지털대성 AI 오피스 메이트</p>
+              </div>
+            </div>
 
-        <Button
-          onClick={onOpenGuide}
-          style={{ boxShadow: "0 6px 0 rgba(0,0,0,0.25)" }}
-          className="mt-8 h-14 w-full rounded-2xl bg-[#191919] text-base font-bold text-white transition-all duration-100 hover:bg-[#2d2d2d] active:translate-y-1 active:shadow-none sm:w-fit sm:px-10"
-        >
-          🤖 디대봇 사용하기
-        </Button>
+            <div className="flex max-h-[560px] flex-col gap-3 overflow-y-auto px-4 py-5 md:gap-3.5 md:px-5 md:py-6">
+              {didaebotConversation.map((msg, i) => (
+                <ChatBubble key={i} {...msg} />
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="relative mx-auto w-full max-w-md lg:max-w-none">
-        <div className="pointer-events-none absolute -inset-4 rounded-[2.75rem] bg-[#3C1E1E]/10 blur-2xl" />
-        <div className="relative overflow-hidden rounded-[2.25rem] border border-black/10 bg-[#ABC1D1] shadow-[0_24px_60px_rgba(0,0,0,0.18)]">
-          <div className="flex items-center gap-3 border-b border-black/5 bg-[#3C1E1E] px-5 py-4">
-            <div className="grid h-10 w-10 place-items-center rounded-full bg-[#FEE500]">
-              <Bot className="h-5 w-5 text-[#3C1E1E]" />
-            </div>
-            <div>
-              <p className="text-sm font-bold text-white">디대봇</p>
-              <p className="text-xs text-white/60">디지털대성 AI 오피스 메이트</p>
-            </div>
-          </div>
+      <div className="rounded-[2rem] border border-[#3C1E1E]/10 bg-white/70 p-6 shadow-sm backdrop-blur-sm md:rounded-[2.5rem] md:p-8">
+        <div className="flex flex-wrap items-center gap-3">
+          <span className="rounded-full bg-[#3C1E1E] px-3 py-1 text-xs font-bold tracking-[0.14em] text-white uppercase">
+            Coming Soon
+          </span>
+          <h4 className="text-xl font-bold text-[#3C1E1E] md:text-2xl">
+            곧 학습할 데이터 · 더 똑똑해지는 답변
+          </h4>
+        </div>
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-700 md:text-base">
+          디대봇이 회사 정보를 더 넓게 학습하면, 담당자 안내·프로젝트 이력·권한
+          요청·결재 방법까지 한 번에 답해 줄 수 있습니다.
+        </p>
 
-          <div className="flex max-h-[560px] flex-col gap-3 overflow-y-auto px-4 py-5 md:gap-3.5 md:px-5 md:py-6">
-            {didaebotConversation.map((msg, i) => (
-              <ChatBubble key={i} {...msg} />
-            ))}
-          </div>
+        <div className="mt-6 grid gap-4 md:grid-cols-2">
+          {didaebotComingSoonScenarios.map((scenario) => (
+            <article
+              key={scenario.dataSource}
+              className="rounded-2xl border border-[#3C1E1E]/10 bg-white p-5 shadow-sm"
+            >
+              <p className="text-xs font-bold tracking-[0.08em] text-[#3C1E1E]/70">
+                {scenario.dataSource}
+              </p>
+              <p className="mt-3 text-sm font-semibold leading-6 text-slate-900">
+                Q. {scenario.question}
+              </p>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                A. {scenario.answer}
+              </p>
+            </article>
+          ))}
+        </div>
+
+        <div className="mt-6 flex items-start gap-3 rounded-2xl border border-[#3C1E1E]/15 bg-[#3C1E1E]/[0.06] px-5 py-4">
+          <Mail className="mt-0.5 h-5 w-5 flex-none text-[#3C1E1E]" />
+          <p className="text-sm leading-6 text-slate-800">
+            디대봇이 추가로 학습했으면 하는 데이터가 있다면{" "}
+            <span className="font-bold text-[#3C1E1E]">
+              경영기획팀 심준혁 프로
+            </span>
+            에게 요청해 주세요.
+          </p>
         </div>
       </div>
     </div>
