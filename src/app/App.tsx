@@ -1,5 +1,12 @@
 import { useState, type ReactNode } from "react";
 import { Button } from "./components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "./components/ui/dialog";
 import { GuideModal } from "./components/GuideModal";
 import kakaotalkLogo from "../assets/kakaotalk.png";
 import seesignLogo from "../assets/SEESIGN.svg";
@@ -22,6 +29,7 @@ import {
   Keyboard,
   ArrowRight,
   Mail,
+  ZoomIn,
 } from "lucide-react";
 
 type ServiceAction = {
@@ -205,21 +213,21 @@ const adMonitoringScreens = [
     step: "01",
     title: "전체 광고 DB",
     description:
-      "디지털대성 임직원이 등록한 키워드·광고주 기반으로 수집된 모든 광고. 이미지 OCR, 유튜브 영상 분석, 랜딩페이지 분석으로 텍스트화해 OCR·카피·광고주로 검색할 수 있어요.",
+      "디지털대성이 봐야할 키워드·광고주별로 수집된 모든 광고. 카피부터 랜딩페이지까지 DB화했으니, 이젠 검색해보세요.",
     image: adDbScreenshot,
   },
   {
     step: "02",
     title: "스마트 아카이브",
     description:
-      "전체 광고 DB에서 내가 원하는 키워드가 들어간 광고만 자동으로 모아보는 나만의 폴더. 경쟁사·소구 키워드별로 광고를 큐레이션하세요.",
+      "원하는 키워드가 들어간 광고만 자동으로 모아 보는 나만의 폴더예요.",
     image: smartArchiveScreenshot,
   },
   {
     step: "03",
     title: "AI 광고 인사이트",
     description:
-      "기간별로 집행된 광고의 핵심 소구 카피, 키워드, 주력 집행 매체·광고 형태를 AI가 요약. 한 번에 경쟁사 광고 전략을 파악할 수 있어요.",
+      "기간별 광고 카피·키워드·매체·형태를 AI가 한눈에 요약해 드려요.",
     image: adAiSummaryScreenshot,
   },
 ];
@@ -229,21 +237,21 @@ const newsMonitoringScreens = [
     step: "01",
     title: "뉴스 육하원칙 분석",
     description:
-      "내 뉴스 그룹이 등록한 키워드로 수집된 기사를 AI가 육하원칙으로 분석하고, 한 줄 핵심 요약까지 제공해요.",
+      "나의 뉴스그룹이 수집한 기사를 AI가 육하원칙으로 분석하고, 한 줄로 요약해요.",
     image: newsAnalysisScreenshot,
   },
   {
     step: "02",
     title: "일간 뉴스 레포트",
     description:
-      "설정한 시간에 최근 24시간 뉴스를 모아, 자사·경쟁사·이슈별로 업무와 가장 밀접한 기사를 선정해 그룹웨어 메일로 배달해 드려요.",
+      "뉴스그룹의 업무 & 관심사와 밀접한 최근 24시간의 기사만 골라, 설정한 시간에 메일로 보내드려요.",
     image: newsReportScreenshot,
   },
   {
     step: "03",
     title: "키워드 알림",
     description:
-      "우리 그룹에서 알림받고 싶은 키워드로 뉴스가 발행되면, 그룹웨어 메일로 즉시 알려드려요. 놓치면 안 되는 이슈를 실시간으로 캐치하세요.",
+      "등록한 키워드가 포함된 뉴스가 발행되면 그룹웨어 메일로 바로 알려드려요.",
     image: newsAlertScreenshot,
   },
 ];
@@ -528,14 +536,16 @@ function DidaebotSection({ onOpenGuide }: { onOpenGuide: () => void }) {
 
 function ContactNotice({ children }: { children: ReactNode }) {
   return (
-    <div className="flex items-start gap-3 rounded-2xl border border-white/20 bg-white/10 px-5 py-4 backdrop-blur-sm">
-      <Mail className="mt-0.5 h-5 w-5 flex-none text-white" />
-      <p className="text-sm leading-6 text-white/90">{children}</p>
+    <div className="flex items-start gap-2.5 rounded-xl border border-white/20 bg-white/10 px-4 py-3 backdrop-blur-sm">
+      <Mail className="mt-0.5 h-4 w-4 flex-none text-white" />
+      <p className="text-xs leading-5 text-white/90 md:text-sm md:leading-6">
+        {children}
+      </p>
     </div>
   );
 }
 
-function FeatureScreenshot({
+function FeatureScreenCard({
   step,
   title,
   description,
@@ -546,48 +556,74 @@ function FeatureScreenshot({
   description: string;
   image: string;
 }) {
+  const [previewOpen, setPreviewOpen] = useState(false);
+
   return (
-    <article className="overflow-hidden rounded-2xl border border-white/20 bg-white shadow-[0_24px_60px_rgba(0,0,0,0.18)]">
-      <div className="flex flex-wrap items-center gap-4 border-b border-slate-100 bg-gradient-to-r from-[#5e72e4]/[0.08] to-white px-5 py-5 md:px-8 md:py-6">
-        <span className="grid h-12 w-12 flex-none place-items-center rounded-xl bg-[#5e72e4] text-lg font-black text-white shadow-md">
-          {step}
-        </span>
-        <div className="min-w-0 flex-1">
-          <p className="text-xs font-bold tracking-[0.2em] text-[#5e72e4] uppercase">
-            SEE:SIGN 화면
-          </p>
-          <h5 className="mt-1 text-2xl font-bold text-slate-900 md:text-3xl">
+    <>
+      <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-white/20 bg-white p-4 shadow-lg md:p-5">
+        <div className="flex items-center gap-3">
+          <span className="grid h-9 w-9 flex-none place-items-center rounded-xl bg-[#5e72e4] text-sm font-black text-white shadow-sm">
+            {step}
+          </span>
+          <h5 className="text-base font-bold leading-snug text-slate-900 md:text-lg">
             {title}
           </h5>
         </div>
-      </div>
 
-      <div className="bg-slate-200/60 p-4 md:p-8">
-        <div className="overflow-hidden rounded-xl border border-slate-300/80 bg-white shadow-2xl ring-1 ring-black/5">
-          <div className="flex items-center gap-3 border-b border-slate-200 bg-slate-100 px-4 py-3 md:px-5">
-            <div className="flex gap-2">
-              <span className="h-3 w-3 rounded-full bg-[#ff5f57]" />
-              <span className="h-3 w-3 rounded-full bg-[#febc2e]" />
-              <span className="h-3 w-3 rounded-full bg-[#28c840]" />
+        <button
+          type="button"
+          onClick={() => setPreviewOpen(true)}
+          aria-label={`${title} 화면 크게 보기`}
+          className="group relative mt-3 w-full overflow-hidden rounded-xl border border-slate-200 bg-slate-50 text-left shadow-md transition-all hover:border-[#5e72e4]/30 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5e72e4]/40"
+        >
+          <div className="flex items-center gap-2 border-b border-slate-200 bg-slate-100 px-3 py-2">
+            <div className="flex gap-1.5">
+              <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
+              <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
+              <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
             </div>
-            <div className="min-w-0 flex-1 rounded-lg bg-white px-4 py-1.5 text-center text-sm font-bold text-[#5e72e4] md:text-base">
+            <p className="min-w-0 flex-1 truncate text-center text-xs font-semibold text-[#5e72e4] md:text-sm">
               SEE:SIGN · {title}
-            </div>
+            </p>
           </div>
-          <img
-            src={image}
-            alt={title}
-            className="block w-full"
-          />
-        </div>
-      </div>
 
-      <div className="border-t border-slate-100 px-5 py-5 md:px-8 md:py-6">
-        <p className="text-base leading-8 text-slate-600 md:text-lg">
+          <div className="relative">
+            <img
+              src={image}
+              alt={title}
+              className="block h-44 w-full object-cover object-top transition-transform duration-200 group-hover:scale-[1.02] sm:h-48 md:h-52 lg:h-56"
+            />
+            <div className="pointer-events-none absolute inset-0 bg-[#5e72e4]/0 transition-colors duration-200 group-hover:bg-[#5e72e4]/[0.06]" />
+            <span className="pointer-events-none absolute right-2 bottom-2 flex items-center gap-1 rounded-md bg-slate-900/35 px-1.5 py-1 text-[10px] text-white/80 opacity-60 backdrop-blur-[2px] transition-opacity group-hover:opacity-100 md:text-[11px]">
+              <ZoomIn className="h-3 w-3" />
+              <span className="hidden sm:inline">클릭하여 확대</span>
+            </span>
+          </div>
+        </button>
+
+        <p className="mt-3 text-sm leading-6 text-slate-600 md:mt-4 md:text-[15px] md:leading-7">
           {description}
         </p>
-      </div>
-    </article>
+      </article>
+
+      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+        <DialogContent className="flex max-h-[96vh] w-[calc(100vw-1rem)] !max-w-[calc(100vw-1rem)] flex-col gap-2 overflow-hidden p-2 sm:w-[calc(100vw-2rem)] sm:!max-w-[1400px] sm:p-3">
+          <DialogHeader className="shrink-0 space-y-1 px-1">
+            <DialogTitle className="text-base md:text-lg">{title}</DialogTitle>
+            <DialogDescription className="text-left text-xs leading-5 text-slate-500 md:text-sm">
+              {description}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="min-h-0 flex-1 overflow-auto rounded-lg border border-slate-200 bg-slate-50">
+            <img
+              src={image}
+              alt={title}
+              className="block h-auto w-full"
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 
@@ -724,43 +760,43 @@ function SeesignSection() {
 
       {/* ── NEW Features (강조) ── */}
       {newFeatures && (
-        <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#3d4fb8] via-[#5e72e4] to-[#7b8eed] p-1 shadow-[0_32px_80px_rgba(94,114,228,0.45)] md:rounded-[2.5rem]">
-          <div className="rounded-[1.85rem] bg-gradient-to-br from-[#2f3fa8] via-[#4a5fd1] to-[#5e72e4] md:rounded-[2.35rem]">
-            <div className="border-b border-white/10 px-6 py-8 text-center md:px-10 md:py-10">
-              <span className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2 text-xs font-black tracking-[0.22em] text-[#5e72e4] uppercase shadow-lg">
+        <div className="relative overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-[#3d4fb8] via-[#5e72e4] to-[#7b8eed] p-1 shadow-[0_24px_60px_rgba(94,114,228,0.35)] md:rounded-[2rem]">
+          <div className="rounded-[1.6rem] bg-gradient-to-br from-[#2f3fa8] via-[#4a5fd1] to-[#5e72e4] md:rounded-[1.85rem]">
+            <div className="border-b border-white/10 px-5 py-5 text-center md:px-8 md:py-6">
+              <span className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-[11px] font-black tracking-[0.18em] text-[#5e72e4] uppercase shadow-lg">
                 ✦ NEW · 2026
               </span>
-              <h3 className="mt-5 text-3xl font-bold text-white md:text-5xl">
+              <h3 className="mt-3 text-2xl font-bold text-white md:text-3xl">
                 이번에 새로 오픈한 기능
               </h3>
-              <p className="mx-auto mt-3 max-w-2xl text-base text-white/80 md:text-lg">
+              <p className="mx-auto mt-2 max-w-2xl text-sm text-white/80 md:text-base">
                 뉴스 모니터링 · 광고 모니터링 — 수집부터 분석·리포트·알림까지
                 SEE:SIGN 하나로
               </p>
             </div>
 
             {/* ── 광고 모니터링 ── */}
-            <div className="border-b border-white/10 px-5 py-8 md:px-10 md:py-10">
-              <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="grid h-14 w-14 place-items-center rounded-2xl bg-white text-[#5e72e4] shadow-lg">
-                    <Megaphone className="h-7 w-7" />
+            <div className="border-b border-white/10 px-4 py-5 md:px-8 md:py-6">
+              <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="grid h-11 w-11 place-items-center rounded-xl bg-white text-[#5e72e4] shadow-lg">
+                    <Megaphone className="h-5 w-5" />
                   </div>
                   <div>
-                    <p className="text-xs font-bold tracking-widest text-white/60 uppercase">
+                    <p className="text-[11px] font-bold tracking-widest text-white/60 uppercase">
                       Ad Monitoring
                     </p>
-                    <h4 className="text-2xl font-bold text-white md:text-3xl">
+                    <h4 className="text-xl font-bold text-white md:text-2xl">
                       광고 모니터링
                     </h4>
-                    <p className="mt-1 text-sm text-white/70 md:text-base">
+                    <p className="mt-0.5 text-xs text-white/70 md:text-sm">
                       GDN · META · YOUTUBE 등 주요 채널 광고를 자동 수집·분석
                     </p>
                   </div>
                 </div>
-                <div className="flex flex-col gap-2 sm:flex-row">
+                <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
                   <Button
-                    className="h-11 gap-2 rounded-xl bg-white px-6 text-sm font-bold text-[#5e72e4] hover:bg-white/90"
+                    className="h-9 gap-2 rounded-lg bg-white px-4 text-xs font-bold text-[#5e72e4] hover:bg-white/90 md:h-10 md:px-5 md:text-sm"
                     onClick={() =>
                       window.open(
                         "https://seesign-admin.digitalds.store/ads/list",
@@ -768,12 +804,12 @@ function SeesignSection() {
                       )
                     }
                   >
-                    <ExternalLink className="h-4 w-4" />
+                    <ExternalLink className="h-3.5 w-3.5" />
                     광고 모니터링 바로가기
                   </Button>
                   <Button
                     variant="outline"
-                    className="h-11 gap-2 rounded-xl border-white/30 bg-white/10 px-6 text-sm font-semibold text-white hover:bg-white/20"
+                    className="h-9 gap-2 rounded-lg border-white/30 bg-white/10 px-4 text-xs font-semibold text-white hover:bg-white/20 md:h-10 md:px-5 md:text-sm"
                     onClick={() =>
                       window.open(
                         "https://seesign-admin.digitalds.store/ads/list",
@@ -781,19 +817,22 @@ function SeesignSection() {
                       )
                     }
                   >
-                    <BookOpen className="h-4 w-4" />
+                    <BookOpen className="h-3.5 w-3.5" />
                     가이드 보기
                   </Button>
                 </div>
               </div>
 
-              <div className="space-y-8 md:space-y-10">
+              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 xl:gap-5">
                 {adMonitoringScreens.map((screen) => (
-                  <FeatureScreenshot key={screen.step} {...screen} />
+                  <FeatureScreenCard key={screen.step} {...screen} />
                 ))}
               </div>
+              <p className="mt-2 text-right text-[11px] text-white/40">
+                화면을 클릭하면 크게 볼 수 있어요
+              </p>
 
-              <div className="mt-6">
+              <div className="mt-4">
                 <ContactNotice>
                   광고 수집·조회, 나만의 광고 아카이브를 만들고 싶으시면{" "}
                   <strong className="font-bold text-white">
@@ -805,27 +844,27 @@ function SeesignSection() {
             </div>
 
             {/* ── 뉴스 모니터링 ── */}
-            <div className="px-5 py-8 md:px-10 md:py-10">
-              <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="grid h-14 w-14 place-items-center rounded-2xl bg-white text-[#5e72e4] shadow-lg">
-                    <Newspaper className="h-7 w-7" />
+            <div className="px-4 py-5 md:px-8 md:py-6">
+              <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="grid h-11 w-11 place-items-center rounded-xl bg-white text-[#5e72e4] shadow-lg">
+                    <Newspaper className="h-5 w-5" />
                   </div>
                   <div>
-                    <p className="text-xs font-bold tracking-widest text-white/60 uppercase">
+                    <p className="text-[11px] font-bold tracking-widest text-white/60 uppercase">
                       News Monitoring
                     </p>
-                    <h4 className="text-2xl font-bold text-white md:text-3xl">
+                    <h4 className="text-xl font-bold text-white md:text-2xl">
                       뉴스 모니터링
                     </h4>
-                    <p className="mt-1 text-sm text-white/70 md:text-base">
+                    <p className="mt-0.5 text-xs text-white/70 md:text-sm">
                       키워드 수집 · AI 분석 · 일간 레포트 · 실시간 알림
                     </p>
                   </div>
                 </div>
-                <div className="flex flex-col gap-2 sm:flex-row">
+                <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
                   <Button
-                    className="h-11 gap-2 rounded-xl bg-white px-6 text-sm font-bold text-[#5e72e4] hover:bg-white/90"
+                    className="h-9 gap-2 rounded-lg bg-white px-4 text-xs font-bold text-[#5e72e4] hover:bg-white/90 md:h-10 md:px-5 md:text-sm"
                     onClick={() =>
                       window.open(
                         "https://seesign-admin.digitalds.store/news/browse",
@@ -833,12 +872,12 @@ function SeesignSection() {
                       )
                     }
                   >
-                    <ExternalLink className="h-4 w-4" />
+                    <ExternalLink className="h-3.5 w-3.5" />
                     뉴스 모니터링 바로가기
                   </Button>
                   <Button
                     variant="outline"
-                    className="h-11 gap-2 rounded-xl border-white/30 bg-white/10 px-6 text-sm font-semibold text-white hover:bg-white/20"
+                    className="h-9 gap-2 rounded-lg border-white/30 bg-white/10 px-4 text-xs font-semibold text-white hover:bg-white/20 md:h-10 md:px-5 md:text-sm"
                     onClick={() =>
                       window.open(
                         "https://seesign.mintlify.app/guide/news/setting",
@@ -846,19 +885,22 @@ function SeesignSection() {
                       )
                     }
                   >
-                    <BookOpen className="h-4 w-4" />
+                    <BookOpen className="h-3.5 w-3.5" />
                     가이드 보기
                   </Button>
                 </div>
               </div>
 
-              <div className="space-y-8 md:space-y-10">
+              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 xl:gap-5">
                 {newsMonitoringScreens.map((screen) => (
-                  <FeatureScreenshot key={screen.step} {...screen} />
+                  <FeatureScreenCard key={screen.step} {...screen} />
                 ))}
               </div>
+              <p className="mt-2 text-right text-[11px] text-white/40">
+                화면을 클릭하면 크게 볼 수 있어요
+              </p>
 
-              <div className="mt-6">
+              <div className="mt-4">
                 <ContactNotice>
                   뉴스 모니터링 그룹을 새로 만들고 싶으시면{" "}
                   <strong className="font-bold text-white">
@@ -869,15 +911,15 @@ function SeesignSection() {
               </div>
             </div>
 
-            <div className="border-t border-white/10 px-6 py-5 text-center md:px-8">
-              <p className="inline-flex flex-wrap items-center justify-center gap-1.5 text-sm text-white/80">
-                <Keyboard className="h-4 w-4" />
+            <div className="border-t border-white/10 px-4 py-3 text-center md:px-6">
+              <p className="inline-flex flex-wrap items-center justify-center gap-1.5 text-xs text-white/80 md:text-sm">
+                <Keyboard className="h-3.5 w-3.5" />
                 가이드에서{" "}
-                <kbd className="rounded bg-white/15 px-1.5 py-0.5 font-mono text-xs">
+                <kbd className="rounded bg-white/15 px-1.5 py-0.5 font-mono text-[10px] md:text-xs">
                   Ctrl + I
                 </kbd>{" "}
                 → SEE:SIGN 가이드 챗봇에게 바로 질문
-                <ArrowRight className="h-4 w-4" />
+                <ArrowRight className="h-3.5 w-3.5" />
               </p>
             </div>
           </div>
