@@ -9,6 +9,7 @@ import {
 } from "./components/ui/dialog";
 import { GuideModal } from "./components/GuideModal";
 import kakaotalkLogo from "../assets/kakaotalk.png";
+import personMemoji from "../assets/person.png";
 import seesignLogo from "../assets/SEESIGN.svg";
 import adDbScreenshot from "../assets/화면 캡처 2026-06-28 233249.png";
 import smartArchiveScreenshot from "../assets/화면 캡처 2026-06-28 233303.png";
@@ -288,7 +289,7 @@ const didaebotComingSoonScenarios: ComingSoonScenario[] = [
     answer: "컨텐츠본부 XXX 프로입니다.",
   },
   {
-    dataSource: "서비스·업무 담당 안내",
+    dataSource: "직원별 업무분장표",
     question: "시사인에 대해 질문하려는데 누구한테 물어봐야 해?",
     answer: "경영기획팀 XXX 프로에게 문의하시면 됩니다.",
   },
@@ -300,7 +301,7 @@ const didaebotComingSoonScenarios: ComingSoonScenario[] = [
       "디자인은 XXX 프로, 기획은 XXX 프로, 개발은 XXX 프로가 진행했습니다.",
   },
   {
-    dataSource: "MIS 업무 진행·마무리 이력",
+    dataSource: "MIS 프로젝트 이력",
     question:
       "저번 달 유대종 강사 XXX 프로모션 업무가 어떻게 진행됐고, 어떻게 마무리됐는지 알려줘.",
     answer:
@@ -314,7 +315,7 @@ const didaebotComingSoonScenarios: ComingSoonScenario[] = [
       "○○ 어드민 경로에서 확인할 수 있습니다. ○○ 품의서로 결재를 올리시고, 결재라인은 ○○ → ○○ 순으로 설정하시면 됩니다.",
   },
   {
-    dataSource: "그룹웨어 결재·지출 안내",
+    dataSource: "마이맥 어드민 · 시사인 매뉴얼 · 업무 매뉴얼",
     question:
       "이번 달 XXX 업체 지출결의서 상신하려는데 그룹웨어에서 어떻게 결재 올리면 되는 거야?",
     answer:
@@ -379,6 +380,113 @@ const didaebotConversation: ChatMessage[] = [
     buttons: ["네", "아니요"],
   },
 ];
+
+const didaebotFutureDataThoughts = [
+  {
+    text: "업무분장표?",
+    className: "left-[2%] top-[4%] md:left-[6%] md:top-[10%]",
+    tail: "bottom-right" as const,
+    delay: 0,
+  },
+  {
+    text: "업무 매뉴얼?",
+    className: "right-[0%] top-[0%] md:right-[5%] md:top-[6%]",
+    tail: "bottom-left" as const,
+    delay: 0.4,
+  },
+  {
+    text: "SEE:SIGN 매뉴얼?",
+    className: "left-[-1%] top-[38%] md:left-[3%] md:top-[42%]",
+    tail: "right" as const,
+    delay: 0.8,
+  },
+  {
+    text: "마이맥 어드민 매뉴얼?",
+    className: "right-[-2%] top-[36%] md:right-[1%] md:top-[40%]",
+    tail: "left" as const,
+    delay: 1.2,
+  },
+  {
+    text: "MIS 데이터?",
+    className: "bottom-[6%] left-1/2 -translate-x-1/2 md:bottom-[8%]",
+    tail: "top" as const,
+    delay: 1.6,
+  },
+];
+
+function DataThoughtBubble({
+  children,
+  className,
+  tail,
+  delay = 0,
+}: {
+  children: ReactNode;
+  className?: string;
+  tail: "top" | "bottom" | "left" | "right" | "bottom-left" | "bottom-right";
+  delay?: number;
+}) {
+  const tailClass: Record<typeof tail, string> = {
+    top: "left-1/2 -top-2 -translate-x-1/2 border-x-[7px] border-b-[9px] border-x-transparent border-b-white",
+    bottom:
+      "left-1/2 -bottom-2 -translate-x-1/2 border-x-[7px] border-t-[9px] border-x-transparent border-t-white",
+    left: "top-1/2 -left-2 -translate-y-1/2 border-y-[7px] border-r-[9px] border-y-transparent border-r-white",
+    right:
+      "top-1/2 -right-2 -translate-y-1/2 border-y-[7px] border-l-[9px] border-y-transparent border-l-white",
+    "bottom-left":
+      "bottom-1 -left-1 border-x-[7px] border-t-[9px] border-x-transparent border-t-white",
+    "bottom-right":
+      "bottom-1 -right-1 border-x-[7px] border-t-[9px] border-x-transparent border-t-white",
+  };
+
+  return (
+    <div className={`absolute z-10 ${className}`}>
+      <div
+        style={{
+          animation: "didaebot-thought-float 3.4s ease-in-out infinite",
+          animationDelay: `${delay}s`,
+        }}
+      >
+        <div className="relative max-w-[9.5rem] rounded-2xl border border-[#3C1E1E]/12 bg-white px-3 py-2 text-center text-[11px] leading-4 font-bold text-[#3C1E1E] shadow-[0_8px_24px_rgba(60,30,30,0.12)] md:max-w-none md:px-4 md:py-2.5 md:text-sm md:leading-5 md:whitespace-nowrap">
+          {children}
+          <span
+            className={`absolute h-0 w-0 drop-shadow-sm ${tailClass[tail]}`}
+            aria-hidden="true"
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ThinkingPersonIllustration() {
+  return (
+    <div
+      className="relative mx-auto mt-6 h-[17.5rem] w-full max-w-2xl overflow-hidden rounded-[1.75rem] border border-[#3C1E1E]/8 bg-gradient-to-b from-[#F4F8FC] via-[#EEF4FA] to-[#E4EDF6] md:mt-8 md:h-[19rem] md:rounded-[2rem]"
+    >
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_72%,rgba(254,229,0,0.14),transparent_52%)]" />
+
+      {didaebotFutureDataThoughts.map((thought) => (
+        <DataThoughtBubble
+          key={thought.text}
+          className={thought.className}
+          tail={thought.tail}
+          delay={thought.delay}
+        >
+          {thought.text}
+        </DataThoughtBubble>
+      ))}
+
+      <div className="absolute left-1/2 top-[52%] z-0 -translate-x-1/2 -translate-y-1/2">
+        <img
+          src={personMemoji}
+          alt="고민하는 직원"
+          className="h-40 w-auto object-contain drop-shadow-[0_16px_32px_rgba(60,30,30,0.2)] md:h-48"
+          draggable={false}
+        />
+      </div>
+    </div>
+  );
+}
 
 function ChatBubble({
   message,
@@ -492,13 +600,11 @@ function DidaebotSection({ onOpenGuide }: { onOpenGuide: () => void }) {
             Coming Soon
           </span>
           <h4 className="text-xl font-bold text-[#3C1E1E] md:text-2xl">
-            곧 학습할 데이터 · 더 똑똑해지는 답변
+            디대봇은 또 어떤 데이터를 학습할 수 있을까요?
           </h4>
         </div>
-        <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-700 md:text-base">
-          디대봇이 회사 정보를 더 넓게 학습하면, 담당자 안내·프로젝트 이력·권한
-          요청·결재 방법까지 한 번에 답해 줄 수 있습니다.
-        </p>
+
+        <ThinkingPersonIllustration />
 
         <div className="mt-6 grid gap-4 md:grid-cols-2">
           {didaebotComingSoonScenarios.map((scenario) => (

@@ -119,6 +119,16 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+@keyframes didaebot-thought-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
