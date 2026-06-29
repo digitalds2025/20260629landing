@@ -1305,7 +1305,7 @@ export default function App() {
           </h1>
           <div className="mx-auto mt-8 inline-flex w-fit items-center gap-3 rounded-full border border-blue-100 bg-white/80 px-6 py-4 text-lg font-semibold text-slate-900 shadow-lg shadow-blue-100/60 backdrop-blur md:text-2xl">
             <Sparkles className="h-7 w-7 text-violet-600 md:h-8 md:w-8" />
-            디지털대성 전용 AI도구 3가지를 공개합니다!
+            디지털대성 전용 AI도구 4가지를 공개합니다!
           </div>
         </div>
       </section>
