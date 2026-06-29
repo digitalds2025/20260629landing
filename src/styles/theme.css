@@ -129,6 +129,73 @@
   }
 }
 
+@keyframes cta-glow {
+  0%,
+  100% {
+    border-color: transparent;
+    box-shadow:
+      0 0 0 0 transparent,
+      0 0 0 0 transparent;
+  }
+  50% {
+    border-color: var(--cta-glow-color);
+    box-shadow:
+      0 0 6px 1px var(--cta-glow-ring),
+      0 0 16px 4px var(--cta-glow-outer-soft);
+  }
+}
+
+@layer utilities {
+  .cta-anim-glow {
+    position: relative;
+    overflow: visible;
+    isolation: isolate;
+  }
+
+  .cta-anim-glow::before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    z-index: -1;
+    border-radius: inherit;
+    border: 2px solid transparent;
+    pointer-events: none;
+    animation: cta-glow 1.8s ease-in-out infinite;
+  }
+
+  .cta-glow-brand {
+    --cta-glow-color: rgba(94, 114, 228, 0.65);
+    --cta-glow-ring: rgba(94, 114, 228, 0.45);
+    --cta-glow-outer-soft: rgba(147, 167, 255, 0.22);
+  }
+
+  .cta-glow-light {
+    --cta-glow-color: rgba(255, 255, 255, 0.7);
+    --cta-glow-ring: rgba(255, 255, 255, 0.45);
+    --cta-glow-outer-soft: rgba(186, 230, 255, 0.22);
+  }
+
+  .cta-glow-dark {
+    --cta-glow-color: rgba(60, 30, 30, 0.7);
+    --cta-glow-ring: rgba(60, 30, 30, 0.5);
+    --cta-glow-outer-soft: rgba(60, 30, 30, 0.28);
+  }
+
+  .cta-glow-cyan {
+    --cta-glow-color: rgba(34, 211, 238, 0.65);
+    --cta-glow-ring: rgba(34, 211, 238, 0.45);
+    --cta-glow-outer-soft: rgba(103, 232, 249, 0.22);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cta-anim-glow::before {
+      animation: none;
+      border-color: var(--cta-glow-color);
+      box-shadow: 0 0 10px 2px var(--cta-glow-ring);
+    }
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

@@ -1,6 +1,6 @@
 import { QRCodeSVG } from "qrcode.react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
-import { Button } from "./ui/button";
+import { CtaButton } from "./CtaButton";
 import { FileText } from "lucide-react";
 
 interface GuideModalProps {
@@ -43,13 +43,13 @@ export function GuideModal({ open, onOpenChange }: GuideModalProps) {
 
           {/* 가이드 보기 */}
           <div className="flex w-full flex-col items-center gap-2">
-            <Button
+            <CtaButton
               className="h-12 w-full gap-2 rounded-xl bg-slate-950 hover:bg-slate-800"
               onClick={() => window.open(GUIDE_URL, "_blank")}
             >
               <FileText className="h-4 w-4" />
               디대봇 가이드 보기
-            </Button>
+            </CtaButton>
             
           </div>
         </div>

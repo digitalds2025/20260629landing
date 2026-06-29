@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from "react";
-import { Button } from "./components/ui/button";
+import { CtaButton } from "./components/CtaButton";
 import {
   Dialog,
   DialogContent,
@@ -563,13 +563,13 @@ function DidaebotSection({ onOpenGuide }: { onOpenGuide: () => void }) {
             </div>
           </div>
 
-          <Button
+          <CtaButton
+            glowTone="dark"
             onClick={onOpenGuide}
-            style={{ boxShadow: "0 6px 0 rgba(0,0,0,0.25)" }}
-            className="mt-8 h-14 w-full rounded-2xl bg-[#191919] text-base font-bold text-white transition-all duration-100 hover:bg-[#2d2d2d] active:translate-y-1 active:shadow-none sm:w-fit sm:px-10"
+            className="mt-8 h-14 w-full rounded-2xl bg-[#191919] text-base font-bold text-white shadow-none transition-all duration-100 hover:bg-[#2d2d2d] active:scale-[0.98] sm:w-fit sm:px-10"
           >
             🤖 디대봇 사용하기
-          </Button>
+          </CtaButton>
         </div>
 
         <div className="relative mx-auto w-full max-w-md lg:max-w-none">
@@ -825,7 +825,7 @@ function SeesignSection() {
       <div className="flex flex-col items-center gap-4">
         <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
           {actions.map((action) => (
-            <Button
+            <CtaButton
               key={action.label}
               variant={action.variant === "secondary" ? "outline" : "default"}
               style={
@@ -843,7 +843,7 @@ function SeesignSection() {
               }}
             >
               {action.label}
-            </Button>
+            </CtaButton>
           ))}
         </div>
 
@@ -901,7 +901,8 @@ function SeesignSection() {
                   </div>
                 </div>
                 <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
-                  <Button
+                  <CtaButton
+                    glowTone="light"
                     className="h-9 gap-2 rounded-lg bg-white px-4 text-xs font-bold text-[#5e72e4] hover:bg-white/90 md:h-10 md:px-5 md:text-sm"
                     onClick={() =>
                       window.open(
@@ -912,8 +913,9 @@ function SeesignSection() {
                   >
                     <ExternalLink className="h-3.5 w-3.5" />
                     광고 모니터링 바로가기
-                  </Button>
-                  <Button
+                  </CtaButton>
+                  <CtaButton
+                    glowTone="light"
                     variant="outline"
                     className="h-9 gap-2 rounded-lg border-white/30 bg-white/10 px-4 text-xs font-semibold text-white hover:bg-white/20 md:h-10 md:px-5 md:text-sm"
                     onClick={() =>
@@ -925,7 +927,7 @@ function SeesignSection() {
                   >
                     <BookOpen className="h-3.5 w-3.5" />
                     가이드 보기
-                  </Button>
+                  </CtaButton>
                 </div>
               </div>
 
@@ -969,7 +971,8 @@ function SeesignSection() {
                   </div>
                 </div>
                 <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
-                  <Button
+                  <CtaButton
+                    glowTone="light"
                     className="h-9 gap-2 rounded-lg bg-white px-4 text-xs font-bold text-[#5e72e4] hover:bg-white/90 md:h-10 md:px-5 md:text-sm"
                     onClick={() =>
                       window.open(
@@ -980,8 +983,9 @@ function SeesignSection() {
                   >
                     <ExternalLink className="h-3.5 w-3.5" />
                     뉴스 모니터링 바로가기
-                  </Button>
-                  <Button
+                  </CtaButton>
+                  <CtaButton
+                    glowTone="light"
                     variant="outline"
                     className="h-9 gap-2 rounded-lg border-white/30 bg-white/10 px-4 text-xs font-semibold text-white hover:bg-white/20 md:h-10 md:px-5 md:text-sm"
                     onClick={() =>
@@ -993,7 +997,7 @@ function SeesignSection() {
                   >
                     <BookOpen className="h-3.5 w-3.5" />
                     가이드 보기
-                  </Button>
+                  </CtaButton>
                 </div>
               </div>
 
@@ -1092,7 +1096,7 @@ function ServiceSection({
 
             <div className="mt-8 flex flex-col gap-3">
               {service.actions.map((action) => (
-                <Button
+                <CtaButton
                   key={action.label}
                   variant={
                     action.variant === "secondary" ? "outline" : "default"
@@ -1113,7 +1117,7 @@ function ServiceSection({
                   }}
                 >
                   {action.label}
-                </Button>
+                </CtaButton>
               ))}
             </div>
           </div>
@@ -1232,7 +1236,8 @@ function ServiceSection({
                     </div>
 
                     <div className="mt-6 flex flex-col gap-2">
-                      <Button
+                      <CtaButton
+                        glowTone="cyan"
                         className="h-10 w-full gap-2 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-cyan-950 text-sm font-semibold"
                         onClick={() =>
                           window.open(feature.appUrl, "_blank")
@@ -1240,8 +1245,9 @@ function ServiceSection({
                       >
                         <ExternalLink className="h-3.5 w-3.5" />
                         {feature.name} 바로가기
-                      </Button>
-                      <Button
+                      </CtaButton>
+                      <CtaButton
+                        glowTone="light"
                         variant="outline"
                         className="h-10 w-full gap-2 rounded-xl border-white/30 bg-white/10 text-white hover:bg-white/20 text-sm"
                         onClick={() =>
@@ -1250,7 +1256,7 @@ function ServiceSection({
                       >
                         <BookOpen className="h-3.5 w-3.5" />
                         가이드 보기
-                      </Button>
+                      </CtaButton>
                     </div>
                   </div>
                 );
