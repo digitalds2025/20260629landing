@@ -1,14 +1,14 @@
 import { QRCodeSVG } from "qrcode.react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { CtaButton } from "./CtaButton";
-import { FileText } from "lucide-react";
+import { FileText, MessageCircle } from "lucide-react";
 
 interface GuideModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-const DIDAEBOT_URL = "http://pf.kakao.com/_QGQxlX";
+const DIDAEBOT_URL = "https://pf.kakao.com/_QGQxlX";
 const GUIDE_URL = "https://drive.google.com/file/d/1h2haDAJMYf22l1e5xZyA5M4OOvlO7v2j/view?usp=sharing";
 
 export function GuideModal({ open, onOpenChange }: GuideModalProps) {
@@ -41,6 +41,20 @@ export function GuideModal({ open, onOpenChange }: GuideModalProps) {
             <div className="h-px flex-1 bg-slate-100" />
           </div>
 
+          {/* 모바일 접속 안내 */}
+          <div className="flex w-full flex-col items-center gap-3 rounded-xl bg-slate-50 p-4 text-center">
+            <p className="text-sm leading-relaxed text-slate-600">
+              모바일로 접속하신 분들은 아래 버튼으로 접속하여 디대봇을 시작하세요.
+            </p>
+            <CtaButton
+              className="h-12 w-full gap-2 rounded-xl"
+              onClick={() => window.open(DIDAEBOT_URL, "_blank")}
+            >
+              <MessageCircle className="h-4 w-4" />
+              디대봇 시작하기
+            </CtaButton>
+          </div>
+
           {/* 가이드 보기 */}
           <div className="flex w-full flex-col items-center gap-2">
             <CtaButton
@@ -50,7 +64,6 @@ export function GuideModal({ open, onOpenChange }: GuideModalProps) {
               <FileText className="h-4 w-4" />
               디대봇 가이드 보기
             </CtaButton>
-            
           </div>
         </div>
       </DialogContent>
